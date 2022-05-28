@@ -132,6 +132,21 @@ let result = add(five, ten);`,
 				token.RightBrace,
 			},
 		},
+		{
+			"equality",
+			`10 == 10;
+10 != 9;`,
+			[]token.Token{
+				token.Integer("10"),
+				token.EqualTo,
+				token.Integer("10"),
+				token.Semicolon,
+				token.Integer("10"),
+				token.NotEqualTo,
+				token.Integer("9"),
+				token.Semicolon,
+			},
+		},
 	} {
 		l := New(tt.input)
 		t.Run(tt.name, func(t *testing.T) {

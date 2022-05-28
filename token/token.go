@@ -28,6 +28,8 @@ const (
 	SLASH    Type = "/"
 	LT       Type = "<"
 	GT       Type = ">"
+	EQ       Type = "=="
+	NEQ      Type = "!="
 
 	// Delimiters
 
@@ -75,6 +77,8 @@ var (
 
 	LessThan    = Symbol(LT)
 	GreaterThan = Symbol(GT)
+	EqualTo     = Symbol(EQ)
+	NotEqualTo  = Symbol(NEQ)
 
 	Semicolon  = Symbol(SEMICOLON)
 	LeftParen  = Symbol(LPAREN)
@@ -98,15 +102,21 @@ func IllegalCharacter(char byte) Token {
 	return Token{ILLEGAL, Literal(char)}
 }
 
-func FromChar(char byte) Token {
-	switch char {
+func FromChar(cur, next byte) Token {
+	switch cur {
 	case '=':
+		if next == '=' {
+			return EqualTo
+		}
 		return Assign
 	case '+':
 		return Plus
 	case '-':
 		return Minus
 	case '!':
+		if next == '=' {
+			return NotEqualTo
+		}
 		return Bang
 	case '*':
 		return Asterisk
@@ -131,7 +141,7 @@ func FromChar(char byte) Token {
 	case 0:
 		return EndOfFile
 	default:
-		return IllegalCharacter(char)
+		return IllegalCharacter(cur)
 	}
 }
 
