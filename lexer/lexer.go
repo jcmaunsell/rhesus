@@ -28,7 +28,10 @@ func (l *lexer) NextToken() token.Token {
 	} else if isDigit(l.char) {
 		return token.Integer(l.readNumber())
 	} else {
-		tok := token.FromChar(l.char)
+		tok := token.FromChar(l.char, l.peekChar())
+		if tok == token.EqualTo || tok == token.NotEqualTo {
+			l.readChar() // token was two characters wide
+		}
 		l.readChar()
 		return tok
 	}
@@ -60,6 +63,13 @@ func (l *lexer) readChar() {
 	}
 	l.cur = l.next
 	l.next += 1
+}
+
+func (l *lexer) peekChar() byte {
+	if l.next >= len(l.input) {
+		return 0
+	}
+	return l.input[l.next]
 }
 
 func isLetter(char byte) bool {

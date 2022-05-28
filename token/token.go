@@ -1,11 +1,11 @@
 package token
 
-type Type string
-
 type Token struct {
 	Type    Type
 	Literal Literal
 }
+
+type Type string
 
 type Literal string
 
@@ -20,8 +20,16 @@ const (
 
 	// Operators
 
-	ASSIGN Type = "="
-	PLUS   Type = "+"
+	ASSIGN   Type = "="
+	PLUS     Type = "+"
+	MINUS    Type = "-"
+	BANG     Type = "!"
+	ASTERISK Type = "*"
+	SLASH    Type = "/"
+	LT       Type = "<"
+	GT       Type = ">"
+	EQ       Type = "=="
+	NEQ      Type = "!="
 
 	// Delimiters
 
@@ -32,102 +40,127 @@ const (
 	LBRACE    Type = "{"
 	RBRACE    Type = "}"
 
-	FUNCTION Type = "function"
-	DEFINE   Type = "def"
-
 	// Keywords
 
-	FN  Literal = "fn"
-	LET Literal = "let"
+	FN     Type = "fn"
+	LET    Type = "let"
+	TRUE   Type = "true"
+	FALSE  Type = "false"
+	IF     Type = "if"
+	ELSE   Type = "else"
+	RETURN Type = "return"
 )
 
-func Let() Token {
-	return Identifier(LET)
+func Symbol(typ Type) Token {
+	return Token{typ, Literal(typ)}
+}
+
+func Keyword(typ Type) Token {
+	return Token{typ, Literal(typ)}
 }
 
 func Identifier(literal Literal) Token {
-	return Token{TypeOf(literal), literal}
+	return Token{typeOf(literal), literal}
 }
 
 func Integer(literal Literal) Token {
 	return Token{INT, literal}
 }
 
-func Assign() Token {
-	return Token{ASSIGN, "="}
-}
+var (
+	Assign   = Symbol(ASSIGN)
+	Plus     = Symbol(PLUS)
+	Minus    = Symbol(MINUS)
+	Bang     = Symbol(BANG)
+	Asterisk = Symbol(ASTERISK)
+	Slash    = Symbol(SLASH)
 
-func Plus() Token {
-	return Token{PLUS, "+"}
-}
+	LessThan    = Symbol(LT)
+	GreaterThan = Symbol(GT)
+	EqualTo     = Symbol(EQ)
+	NotEqualTo  = Symbol(NEQ)
 
-func Semicolon() Token {
-	return Token{SEMICOLON, ";"}
-}
+	Semicolon  = Symbol(SEMICOLON)
+	LeftParen  = Symbol(LPAREN)
+	RightParen = Symbol(RPAREN)
+	LeftBrace  = Symbol(LBRACE)
+	RightBrace = Symbol(RBRACE)
+	Comma      = Symbol(COMMA)
 
-func Function() Token {
-	return Identifier(FN)
-}
+	EndOfFile = Token{EOF, ""}
 
-func LeftParen() Token {
-	return Token{LPAREN, Literal('(')}
-}
-
-func RightParen() Token {
-	return Token{RPAREN, Literal(')')}
-}
-
-func LeftBrace() Token {
-	return Token{LBRACE, Literal('{')}
-}
-
-func RightBrace() Token {
-	return Token{RBRACE, Literal('}')}
-}
-
-func Comma() Token {
-	return Token{COMMA, Literal(',')}
-}
-
-func EndOfFile() Token {
-	return Token{EOF, ""}
-}
+	Function = Keyword(FN)
+	Let      = Keyword(LET)
+	True     = Keyword(TRUE)
+	False    = Keyword(FALSE)
+	If       = Keyword(IF)
+	Else     = Keyword(ELSE)
+	Return   = Keyword(RETURN)
+)
 
 func IllegalCharacter(char byte) Token {
 	return Token{ILLEGAL, Literal(char)}
 }
 
-func FromChar(char byte) Token {
-	switch char {
+func FromChar(cur, next byte) Token {
+	switch cur {
 	case '=':
-		return Assign()
+		if next == '=' {
+			return EqualTo
+		}
+		return Assign
 	case '+':
-		return Plus()
+		return Plus
+	case '-':
+		return Minus
+	case '!':
+		if next == '=' {
+			return NotEqualTo
+		}
+		return Bang
+	case '*':
+		return Asterisk
+	case '/':
+		return Slash
+	case '<':
+		return LessThan
+	case '>':
+		return GreaterThan
 	case ',':
-		return Comma()
+		return Comma
 	case ';':
-		return Semicolon()
+		return Semicolon
 	case '(':
-		return LeftParen()
+		return LeftParen
 	case ')':
-		return RightParen()
+		return RightParen
 	case '{':
-		return LeftBrace()
+		return LeftBrace
 	case '}':
-		return RightBrace()
+		return RightBrace
 	case 0:
-		return EndOfFile()
+		return EndOfFile
 	default:
-		return IllegalCharacter(char)
+		return IllegalCharacter(cur)
 	}
 }
 
-func TypeOf(identifier Literal) Type {
-	switch identifier {
+func typeOf(identifier Literal) Type {
+	switch Type(identifier) {
 	case FN:
-		return FUNCTION
+		fallthrough
 	case LET:
-		return DEFINE
+		fallthrough
+	case TRUE:
+		fallthrough
+	case FALSE:
+		fallthrough
+	case IF:
+		fallthrough
+	case ELSE:
+		fallthrough
+	case RETURN:
+		return Type(identifier)
 	default:
 		return IDENT
 	}

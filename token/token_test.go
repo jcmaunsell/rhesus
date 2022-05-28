@@ -58,7 +58,7 @@ func TestFromChar(t *testing.T) {
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.expected, FromChar(tt.char))
+			assert.Equal(t, tt.expected, FromChar(tt.char, 0))
 		})
 	}
 }
