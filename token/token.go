@@ -38,16 +38,22 @@ const (
 	LBRACE    Type = "{"
 	RBRACE    Type = "}"
 
-	FUNCTION Type = "function"
-	DEFINE   Type = "def"
-
 	// Keywords
 
-	FN  Literal = "fn"
-	LET Literal = "let"
+	FN     Type = "fn"
+	LET    Type = "let"
+	TRUE   Type = "true"
+	FALSE  Type = "false"
+	IF     Type = "if"
+	ELSE   Type = "else"
+	RETURN Type = "return"
 )
 
 func Symbol(typ Type) Token {
+	return Token{typ, Literal(typ)}
+}
+
+func Keyword(typ Type) Token {
 	return Token{typ, Literal(typ)}
 }
 
@@ -79,8 +85,13 @@ var (
 
 	EndOfFile = Token{EOF, ""}
 
-	Function = Identifier(FN)
-	Let      = Identifier(LET)
+	Function = Keyword(FN)
+	Let      = Keyword(LET)
+	True     = Keyword(TRUE)
+	False    = Keyword(FALSE)
+	If       = Keyword(IF)
+	Else     = Keyword(ELSE)
+	Return   = Keyword(RETURN)
 )
 
 func IllegalCharacter(char byte) Token {
@@ -125,11 +136,21 @@ func FromChar(char byte) Token {
 }
 
 func typeOf(identifier Literal) Type {
-	switch identifier {
+	switch Type(identifier) {
 	case FN:
-		return FUNCTION
+		fallthrough
 	case LET:
-		return DEFINE
+		fallthrough
+	case TRUE:
+		fallthrough
+	case FALSE:
+		fallthrough
+	case IF:
+		fallthrough
+	case ELSE:
+		fallthrough
+	case RETURN:
+		return Type(identifier)
 	default:
 		return IDENT
 	}

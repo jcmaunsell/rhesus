@@ -105,6 +105,33 @@ let result = add(five, ten);`,
 				token.Semicolon,
 			},
 		},
+		{
+			"booleans",
+			`if (5 < 10) {
+	return true;
+} else {
+	return false;
+}`,
+			[]token.Token{
+				token.If,
+				token.LeftParen,
+				token.Integer("5"),
+				token.LessThan,
+				token.Integer("10"),
+				token.RightParen,
+				token.LeftBrace,
+				token.Return,
+				token.True,
+				token.Semicolon,
+				token.RightBrace,
+				token.Else,
+				token.LeftBrace,
+				token.Return,
+				token.False,
+				token.Semicolon,
+				token.RightBrace,
+			},
+		},
 	} {
 		l := New(tt.input)
 		t.Run(tt.name, func(t *testing.T) {
