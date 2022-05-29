@@ -1,3 +1,5 @@
+# github.com/Sirupsen/logrus v1.8.1
+## explicit
 # github.com/davecgh/go-spew v1.1.0
 ## explicit
 github.com/davecgh/go-spew/spew
