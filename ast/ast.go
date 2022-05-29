@@ -12,8 +12,12 @@ type Expr Node
 
 type Program []Statement
 
+func (p Program) With(statement Statement) Program {
+	return append(p, statement)
+}
+
 type Let struct {
-	Name  *Identifier
+	Name  Identifier
 	Value Expr
 }
 
