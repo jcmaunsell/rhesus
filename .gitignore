@@ -13,3 +13,12 @@
 
 # Goland project files
 .idea
+
+# Binary
+rhesus
+
+# macOS hidden file
+.DS_Store
+
+# Logs directory
+log/*
