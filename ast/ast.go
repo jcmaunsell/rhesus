@@ -12,7 +12,7 @@ type Expr Node
 
 type Program []Statement
 
-func (p Program) With(statement Statement) Program {
+func (p Program) Append(statement Statement) Program {
 	return append(p, statement)
 }
 
@@ -22,11 +22,11 @@ type Let struct {
 }
 
 func (l Let) TokenLiteral() token.Literal {
-	return token.LET
+	return token.Let.Literal
 }
 
 type Identifier token.Literal
 
 func (i Identifier) TokenLiteral() token.Literal {
-	return token.IDENT
+	return token.Literal(i)
 }
