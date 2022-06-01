@@ -17,8 +17,8 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			panic(fmt.Errorf("could not get username: %w", err))
 		}
-		fmt.Printf("Hi %s! Welcome to Rhesus.\n", usr.Username)
-		fmt.Println("You can enter Monkey commands here.")
+		cmd.Printf("Hi %s! Welcome to Rhesus.\n", usr.Username)
+		cmd.Println("You can enter Monkey commands here.")
 		r, err := repl.New()
 		if err != nil {
 			panic(fmt.Errorf("could not initialize REPL: %w", err))
@@ -29,7 +29,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		logger.Service().WithError(err).Error("Root command failed.")
+		logger.Service().WithError(err).Error("The CLI exited with an error.")
 		os.Exit(1)
 	}
 }
